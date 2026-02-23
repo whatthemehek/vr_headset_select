@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Conda
+env/
+vrselect/
+*.conda
+
+# Blender temp
+*.blend1
+*.blend2
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Optional: ignore generated quad meshes
+assets/**
