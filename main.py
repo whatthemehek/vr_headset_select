@@ -41,6 +41,7 @@ def main():
         # Draw models
         renderer.draw_model(
             center.vertices,
+            center.faces,
             center.edges,
             0,
             config.CENTER_SCALE,
@@ -49,6 +50,7 @@ def main():
 
         renderer.draw_model(
             left.vertices,
+            left.faces,
             left.edges,
             -config.MODEL_SPACING,
             config.SIDE_SCALE,
@@ -57,6 +59,7 @@ def main():
 
         renderer.draw_model(
             right.vertices,
+            right.faces,
             right.edges,
             config.MODEL_SPACING,
             config.SIDE_SCALE,

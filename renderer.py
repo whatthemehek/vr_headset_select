@@ -26,15 +26,36 @@ class Renderer:
         glClearColor(0, 0, 0, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    def draw_model(self, vertices, edges, position_x,
-                scale, rotation_y=0):
+    def draw_model(self, vertices, faces, edges,
+                position_x, scale, rotation_y=0):
 
         glPushMatrix()
         glTranslatef(position_x, 0, -4.2)
         glScalef(scale, scale, scale)
         glRotatef(rotation_y, 0, 1, 0)
 
-        glDisable(GL_DEPTH_TEST)
+        glEnable(GL_DEPTH_TEST)
+
+        # -------- PASS 1: BLACK FILL --------
+        glEnable(GL_POLYGON_OFFSET_FILL)
+        glPolygonOffset(1.0, 1.0)
+
+        glColor3f(0.0, 0.0, 0.0)
+
+        glBegin(GL_TRIANGLES)
+
+        for face in faces:
+            # triangulate n-gon manually (fan triangulation)
+            for i in range(1, len(face) - 1):
+                glVertex3fv(vertices[face[0]])
+                glVertex3fv(vertices[face[i]])
+                glVertex3fv(vertices[face[i + 1]])
+
+        glEnd()
+
+        glDisable(GL_POLYGON_OFFSET_FILL)
+
+        # -------- PASS 2: WIREFRAME --------
         glLineWidth(1.5)
         glColor3f(*config.WIREFRAME_COLOR)
 
@@ -44,7 +65,6 @@ class Renderer:
             glVertex3fv(vertices[edge[1]])
         glEnd()
 
-        glEnable(GL_DEPTH_TEST)
         glPopMatrix()
     # ---------- TEXTURE TEXT RENDERING ----------
     def draw_text(self, text, x, y):

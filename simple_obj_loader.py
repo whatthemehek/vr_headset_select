@@ -2,8 +2,6 @@ import numpy as np
 
 
 import numpy as np
-
-
 def load_obj(path):
     vertices = []
     faces = []
@@ -16,35 +14,38 @@ def load_obj(path):
 
             elif line.startswith("f "):
                 parts = line.strip().split()[1:]
-                face_indices = [int(p.split("/")[0]) - 1 for p in parts]
-                faces.append(face_indices)
+                face = [int(p.split("/")[0]) - 1 for p in parts]
+                faces.append(face)
 
     vertices = np.array(vertices)
 
-    # ---- AUTO CENTER ----
+    # --- Auto center ---
     min_vals = vertices.min(axis=0)
     max_vals = vertices.max(axis=0)
     center = (min_vals + max_vals) / 2.0
-    vertices = vertices - center
+    vertices -= center
 
-    # ---- AUTO SCALE ----
+    # --- Auto scale ---
     size = np.max(max_vals - min_vals)
     if size > 0:
-        vertices = vertices / size
+        vertices /= size
 
-    # ---- GENERATE UNIQUE EDGES FROM FACES ----
-    edges = set()
+    # --- Generate edges ---
+    edge_count = {}
 
     for face in faces:
         for i in range(len(face)):
             a = face[i]
             b = face[(i + 1) % len(face)]
             edge = tuple(sorted((a, b)))
-            edges.add(edge)
 
-    edges = list(edges)
+            if edge not in edge_count:
+                edge_count[edge] = 0
+            edge_count[edge] += 1
 
-    return vertices, edges
+    # Keep only edges shared by two faces
+    edges = [edge for edge, count in edge_count.items() if count == 2]
+    return vertices, faces, edges
 
 import numpy as np
 from scipy.spatial import ConvexHull

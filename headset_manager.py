@@ -73,7 +73,7 @@ class Headset:
 
         quad_path = ensure_quadmesh(model_path)
 
-        self.vertices, self.edges = load_obj(quad_path)
+        self.vertices, self.faces, self.edges = load_obj(quad_path)
 
         if description_path and os.path.exists(description_path):
             with open(description_path, "r", encoding="utf-8") as f:
